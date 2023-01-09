@@ -1,0 +1,123 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Details</title>
+    <!--/*/ <th:block th:include="head :: head"/> /*/-->
+    <script>
+        const getData = () => {
+            const url = "[[${gatewayUrl}]]";
+
+            fetch(`${url}/v1/tasks`).then(function (response) {
+                return response.json();
+            }).then(function (json) {
+                json = encodeURI(JSON.stringify(json));
+                fetch(`${url}/taskPage?json=${json}`).then(function (response) {
+                    return response.text();
+                }).then(function (html) {
+                    console.log(html);
+                    document.getElementById("myPlaceHolder").innerHTML += html;
+                });
+            }).catch(function (err) {
+                console.warn('Something went wrong.', err);
+                document.getElementById("myPlaceHolder").innerHTML += err;
+            });
+        }
+
+        getData();
+    </script>
+</head>
+<body id="samples">
+<div th:replace="menu :: menu"></div>
+
+<div id="content" class="container">
+
+    <div>
+        <h2>My Profile</h2>
+        <p>Hello, <b><span th:text="${name}">Joe Coder</span></b>. Below is the
+            information that was read with your <a
+                    href="https://developer.okta.com/docs/api/resources/oidc.html#get-user-information">ID Token</a>.
+        </p>
+
+        <div class="row">
+            <div class="col">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Claim</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${details}">
+                        <td th:text="${item.key}">Key</td>
+                        <td th:id="${'claim-' + item.key}" th:text="${item.value}">Value</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Spring Security Authorities</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="scope : ${#authentication.authorities}">
+                        <td><code th:text="${scope}">Authority</code></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">View Orders</button>
+                <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">View Tasks</button>
+                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Authentication Object</button>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div th:if="${msgOrderError}" class="text fw-light fs-6 lh-1">
+                    <p>Order Error msg: <b><span th:text="${msgOrderError}">msgOrderError</span></b></p>
+                </div>
+                <div th:unless="${msgOrderError}" class="text fw-light fs-6 lh-1">
+                    <div>
+                        <p><b>API:</b> <span th:text="${gatewayUrl+'/v1/orders'}">Joe Coder</span> </p>
+                    </div>
+                    <div>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>price</th>
+                                <th>user</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="order, iStat : ${orders}"
+                                th:style="${iStat.odd}? 'font-weight: bold;'"
+                                th:alt-title="${iStat.even}? 'even' : 'odd'">
+                                <td th:text="${order.orderId}" />
+                                <td th:text="${order.price}" />
+                                <td th:text="${order.user}" />
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div id="myPlaceHolder"></div>
+            </div>
+            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                <span th:text="${authenticationObj}">Authentication</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+<!--/*/ <th:block th:include="footer :: footer"/> /*/-->
+</html>

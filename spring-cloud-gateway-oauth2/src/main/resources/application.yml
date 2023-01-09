@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: order-service
+          uri: ${order-service-url:http://localhost:8081}
+          predicates:
+            - Path=/v1/orders/**
+          filters:
+            - TokenRelay=
+            - RemoveRequestHeader=Cookie
+        - id: task-service
+          uri: ${task-service-url:http://localhost:8083}
+          predicates:
+            - Path=/v1/tasks/**
+          filters:
+            - SaveSession
+        - id: frontend
+          uri: ${frontend-url:http://localhost:8082}
+          predicates:
+            - Path=/home,/taskPage
+          filters:
+            - SaveSession
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+          okta:
+            client-id: ${OKTA_CLIENT_ID}
+            client-secret: ${OKTA_CLIENT_SECRET}
+        provider:
+          okta:
+            authorization-uri: https://${OKTA_DOMAIN}/oauth2/default/v1/authorize
+            token-uri: https://${OKTA_DOMAIN}/oauth2/default/v1/token
+            user-info-uri: https://${OKTA_DOMAIN}/oauth2/default/v1/userinfo
+            jwk-set-uri: https://${OKTA_DOMAIN}/oauth2/default/v1/keys
+
+com:
+  example:
+    multipleJwks:
+      google: https://www.googleapis.com/oauth2/v3/certs
+      okta: https://${OKTA_DOMAIN}/oauth2/default/v1/keys

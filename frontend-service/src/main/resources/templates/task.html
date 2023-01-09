@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+
+<body>
+<div th:if="${msgTaskError}" class="text fw-light fs-6 lh-1">
+    <p>Task Error msg: <b><span th:text="${msgTaskError}">msgTaskError</span></b></p>
+</div>
+<div th:unless="${msgTaskError}" class="text fw-light fs-6 lh-1">
+    <div>
+        <p><b>API:</b> <span th:text="${gatewayUrl+'/v1/tasks'}">Joe Coder</span> </p>
+    </div>
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>user</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task, iStat : ${tasks}"
+                th:style="${iStat.odd}? 'font-weight: bold;'"
+                th:alt-title="${iStat.even}? 'even' : 'odd'">
+                <td th:text="${task.taskId}" />
+                <td th:text="${task.name}" />
+                <td th:text="${task.user}" />
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
