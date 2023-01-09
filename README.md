@@ -2,6 +2,8 @@
 
 A showcase demonstrate how to implement API Gateway Oauth2 and share session across downstream services(frontend and backend).
 
+More details look at https://www.linkedin.com/pulse/securing-resources-apigatewayspring-cloud-gateway-rodrigo-rodrigues/?published=t
+
 To run `mvn clean package` and `mvn spring-boot:run` for each folder.
 
 ### References
