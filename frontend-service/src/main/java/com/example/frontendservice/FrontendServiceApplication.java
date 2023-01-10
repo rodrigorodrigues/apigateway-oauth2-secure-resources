@@ -8,8 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnCloudPlatform;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.cloud.CloudPlatform;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -44,6 +50,9 @@ public class FrontendServiceApplication implements WebMvcConfigurer {
     @Value("${GATEWAY_URL:http://localhost:8080}")
     private String gatewayUrl;
 
+    @Value("${ORDER_SERVICE_URL:http://localhost:8082}")
+    private String orderServiceUrl;
+
     @PostConstruct
     public void init(){
         this.defaultCookieSerializer.setUseBase64Encoding(false);
@@ -58,6 +67,7 @@ public class FrontendServiceApplication implements WebMvcConfigurer {
         return http
                 .csrf().disable()
                 .authorizeHttpRequests()
+                .antMatchers("/actuator/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -72,7 +82,25 @@ public class FrontendServiceApplication implements WebMvcConfigurer {
         registry.addRedirectViewController("/home", "/");
     }
 
+    @Profile("consul")
+    @Primary
     @Bean
+    @LoadBalanced
+    RestTemplate restTemplateLoadBalancedConsul(RestTemplateBuilder builder) {
+        return builder.build();
+    }
+
+    @ConditionalOnCloudPlatform(CloudPlatform.KUBERNETES)
+    @Primary
+    @Bean
+    @LoadBalanced
+    @ConditionalOnMissingBean
+    RestTemplate restTemplateLoadBalancedK8s(RestTemplateBuilder builder) {
+        return builder.build();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
@@ -126,7 +154,7 @@ public class FrontendServiceApplication implements WebMvcConfigurer {
                 }
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity httpEntity = new HttpEntity<>(httpHeaders);
-                model.addAttribute("orders", restTemplate.exchange(String.format("%s/v1/orders", gatewayUrl), HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<OrderDto>>() {
+                model.addAttribute("orders", restTemplate.exchange(String.format("%s/v1/orders", orderServiceUrl), HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<OrderDto>>() {
                 }).getBody());
             } catch (Exception e) {
                 log.warn("Could not get orders", e);

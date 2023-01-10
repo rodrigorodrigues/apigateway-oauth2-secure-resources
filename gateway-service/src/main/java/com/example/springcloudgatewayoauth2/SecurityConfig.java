@@ -23,6 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, OAuth2ClientProperties oAuth2ClientProperties) {
         http.authorizeExchange()
+                .pathMatchers("/actuator/**").permitAll()
                 .anyExchange()
                 .authenticated()
                 .and().formLogin();

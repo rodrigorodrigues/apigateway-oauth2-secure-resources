@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-service
+  labels:
+    app: frontend-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-service
+  template:
+    metadata:
+      labels:
+        app: frontend-service
+    spec:
+      containers:
+        - name: frontend-service
+          image: frontend-service:0.0.1-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JAVA_OPTS
+              value: -Xss256K -Xms1M -XX:+UseSerialGC -Djava.compiler=none -XX:ReservedCodeCacheSize=2496k -XX:MaxDirectMemorySize=1M -Xms256m -Xmx512m
+            - name: SERVER_PORT
+              value: "8082"
+            - name: SPRING_REDIS_HOST
+              value: redis
+            - name: SPRING_CLOUD_CONSUL_ENABLED
+              value: "false"
+            - name: ORDER_SERVICE_URL
+              value: http://order-service:8081
+            - name: GATEWAY_URL
+              value: http://localhost
+          ports:
+            - containerPort: 8082
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /actuator/health/liveness
+              port: 8082
+            initialDelaySeconds: 1000
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /actuator/health/readiness
+              port: 8082
+            initialDelaySeconds: 1000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  labels:
+    app: frontend-service
+spec:
+  ports:
+    - port: 8082
+  selector:
+    app: frontend-service

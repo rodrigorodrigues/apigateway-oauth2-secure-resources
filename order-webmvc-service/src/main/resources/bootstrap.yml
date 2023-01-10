@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: order-service
+
+com:
+  example:
+    multipleJwks:
+      google: https://www.googleapis.com/oauth2/v3/certs
+      okta: https://${OKTA_DOMAIN}/oauth2/default/v1/keys
+
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+  cloud:
+    kubernetes:
+      enabled: false
+    consul:
+      enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: consul
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+    kubernetes:
+      enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-cloud-platform: kubernetes
+  cloud:
+    consul:
+      enabled: false

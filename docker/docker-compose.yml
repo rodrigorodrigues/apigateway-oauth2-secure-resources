@@ -1,5 +1,13 @@
 version: '3.2'
 services:
+  consul:
+    image: consul:latest
+    container_name: consul
+    ports:
+      - "8500:8500"
+    command: "agent -server -bootstrap -ui -client=0.0.0.0"
+
+
   gateway-service:
     image: gateway-service:0.0.1-SNAPSHOT
     container_name: gateway-service

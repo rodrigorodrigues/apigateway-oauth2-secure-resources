@@ -1,0 +1,36 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: gateway-service
+          uri: http://gateway-service:8080
+          predicates:
+            - Path=/actuator/**
+        - id: order-service
+          uri: http://order-service:8081
+          predicates:
+            - Path=/v1/orders/**
+          filters:
+            - TokenRelay=
+            - RemoveRequestHeader=Cookie
+        - id: task-service
+          uri: http://task-service:8083
+          predicates:
+            - Path=/v1/tasks/**
+          filters:
+            - SaveSession
+        - id: frontend
+          uri: http://frontend-service:8082
+          predicates:
+            - Path=/home,/taskPage
+          filters:
+            - SaveSession
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:8080"
+              - "http://localhost"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+            allowCredentials: true

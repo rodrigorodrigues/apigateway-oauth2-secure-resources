@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: frontend-service
+
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+  cloud:
+    kubernetes:
+      enabled: false
+    consul:
+      enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: consul
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+    kubernetes:
+      enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-cloud-platform: kubernetes
+  cloud:
+    consul:
+      enabled: false
+

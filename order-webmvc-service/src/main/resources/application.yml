@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: order-service
-
-com:
-  example:
-    multipleJwks:
-      google: https://www.googleapis.com/oauth2/v3/certs
-      okta: https://${OKTA_DOMAIN}/oauth2/default/v1/keys

@@ -1,0 +1,55 @@
+@startuml
+actor "User" as U
+participant "Frontend" as F
+participant "Gateway" as G
+participant "OAuth2" as O
+participant "Resource" as R
+
+U -> F : User access page/app
+F -> G : Request resource
+G -> O : Redirect to oauth2 flow
+O -> U : Request Authentication
+U -> O : Gives authorization for the app
+O -> G : User details + IdToken
+G -> G : Sign **a new Token**
+G -> R : Send request with Bearer Token to resource
+R -> R : Validate JWKS(against Gateway)
+R -> G : Return response
+G -> F : Propagate response and send **new Token created previously**
+F -> U : Display the page
+@enduml
+
+
+
+@startuml
+actor "User" as U
+participant "Frontend" as F
+participant "APIGateway(**spring-cloud-gateway**)" as G
+participant "K8S/Discovery Client(consul, eureka)" as I
+participant "Resources" as R
+
+U -> F : User access page/app
+F -> G : Request resource(**GET - /v1/orders**)
+G -> I : Forward request - **lb://order-service**
+I -> I : Find Resource based on service-name
+I -> R : Forward request
+R -> I : Return response
+I -> G : Propagate response
+G -> F : Propagate response
+F -> U : Display the page
+@enduml
+
+
+@startuml
+actor "User" as U
+participant "Frontend" as F
+participant "APIGateway(**spring-cloud-gateway**)" as G
+participant "Resources" as R
+
+U -> F : User access page/app
+F -> G : Request resource(**GET - http://localhost:8080/v1/orders**)
+G -> R : Forward request to resource **http://localhost:8082**
+R -> G : Return response
+G -> F : Propagate response
+F -> U : Display the page
+@enduml
