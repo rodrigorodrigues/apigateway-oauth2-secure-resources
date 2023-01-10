@@ -1,16 +1,24 @@
 # API Gateway - Oauth2 - Form Login - Downstream Services(frontend/backend)
 
-A showcase demonstrate how to implement Spring Cloud Gateway with Oauth2 and `token + session sharing` propagation across downstream services(`frontend and backend`).
+A showcase demonstrate how to implement Spring Cloud Gateway with Oauth2 for `token + session sharing` propagation across downstream resources(`frontend and backend`).
 
-To run `mvn clean package` and `mvn spring-boot:run` for each folder except `multiple-jwks-validation`.
+To build `mvn clean package` then `mvn spring-boot:run` in each folder except `multiple-jwks-validation`.
 
-To generate a docker image `mvn spring-boot:build-image` for each folder except `multiple-jwks-validation`.
+To use docker `./generate-docker-images.sh` then `docker-compose up -d`.
 
-Configure `OAUTH2` credentials and set the variables in `spring-cloud-gateway/src/main/resources/application.yml`
+To configure `oauth2` credentials and set the variables in `spring-cloud-gateway/src/main/resources/application.yml` or via environment variable.
 
-Access Gateway by http://localhost:8080 and use default users(`user/admin`) with password(`password`).
+```
+export GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+export GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+export OKTA_CLIENT_ID=${OKTA_CLIENT_ID}
+export OKTA_CLIENT_SECRET=${OKTA_CLIENT_SECRET}
+export OKTA_DOMAIN=${OKTA_DOMAIN}
+```
 
-After `oauth2 login` you can get a valid bearer token access, click in `Authentication Object Tab` and copy tokenValue.
+Access Gateway by http://localhost:8080 with default users(`user/admin`) and password(`password`).
+
+With `oauth2 login` you can get a valid bearer token access, click in `Authentication Object Tab` and copy tokenValue.
 
 To test by curl with valid token should reply 200.
 
@@ -26,7 +34,7 @@ curl -v -H "Authorization: Bearer ..." localhost:8080/v1/orders
 [{"orderId":"7114e8d4-c45f-4536-a5cc-9ed73502938f","price":100.00,"user":"default"},{"orderId":"c64d3333-61ed-4005-96a3-dc92d38d3403","price":29.89,"user":"default"}]%
 ```
 
-Or with invalid/expired 401.
+Or with invalid/expired token return 401.
 ```
 curl -v -H "Authorization: Invalid Token
 *   Trying 127.0.0.1:8080...

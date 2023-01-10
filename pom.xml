@@ -17,10 +17,10 @@
   </properties>
 
   <modules>
-    <module>spring-cloud-gateway-oauth2</module>
+    <module>gateway-service</module>
     <module>multiple-jwks-validation</module>
     <module>frontend-service</module>
-    <module>spring-boot-order-service</module>
+    <module>order-webmvc-service</module>
     <module>task-webflux-service</module>
   </modules>
 

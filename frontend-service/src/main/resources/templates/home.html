@@ -4,7 +4,7 @@
     <!--/*/ <th:block th:include="head :: head"/> /*/-->
     <script>
         const getData = () => {
-            const url = "[[${gatewayUrl}]]";
+            const url = "http://localhost:8080";
 
             fetch(`${url}/v1/tasks`).then(function (response) {
                 return response.json();
@@ -84,7 +84,7 @@
                 </div>
                 <div th:unless="${msgOrderError}" class="text fw-light fs-6 lh-1">
                     <div>
-                        <p><b>API:</b> <span th:text="${gatewayUrl+'/v1/orders'}">Joe Coder</span> </p>
+                        <p><b>API:</b> http://localhost:8080/v1/orders</p>
                     </div>
                     <div>
                         <table class="table table-striped">

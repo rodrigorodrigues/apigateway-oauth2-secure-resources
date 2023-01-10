@@ -15,7 +15,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-@SpringBootTest(properties = {"order-service-url=http://localhost:${wiremock.server.port}", "logging.level.org.springframework.security=trace"})
+@SpringBootTest(properties = {"ORDER_SERVICE_URL=http://localhost:${wiremock.server.port}", "logging.level.org.springframework.security=trace"})
 @AutoConfigureWebTestClient
 @AutoConfigureWireMock(port = 0)
 class SpringCloudGatewayOauth2ApplicationTests {

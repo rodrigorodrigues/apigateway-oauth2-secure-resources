@@ -41,7 +41,7 @@ public class FrontendServiceApplication implements WebMvcConfigurer {
     @Autowired
     private DefaultCookieSerializer defaultCookieSerializer;
 
-    @Value("${gateway-url:http://localhost:8080}")
+    @Value("${GATEWAY_URL:http://localhost:8080}")
     private String gatewayUrl;
 
     @PostConstruct
@@ -126,7 +126,7 @@ public class FrontendServiceApplication implements WebMvcConfigurer {
                 }
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity httpEntity = new HttpEntity<>(httpHeaders);
-                model.addAttribute("orders", restTemplate.exchange("http://localhost:8080/v1/orders", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<OrderDto>>() {
+                model.addAttribute("orders", restTemplate.exchange(String.format("%s/v1/orders", gatewayUrl), HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<OrderDto>>() {
                 }).getBody());
             } catch (Exception e) {
                 log.warn("Could not get orders", e);

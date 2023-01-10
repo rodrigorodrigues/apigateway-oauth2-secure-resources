@@ -5,20 +5,20 @@ spring:
     gateway:
       routes:
         - id: order-service
-          uri: ${order-service-url:http://localhost:8081}
+          uri: ${ORDER_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/v1/orders/**
           filters:
             - TokenRelay=
             - RemoveRequestHeader=Cookie
         - id: task-service
-          uri: ${task-service-url:http://localhost:8083}
+          uri: ${TASK_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/v1/tasks/**
           filters:
             - SaveSession
         - id: frontend
-          uri: ${frontend-url:http://localhost:8082}
+          uri: ${FRONTEND_URL:http://localhost:8082}
           predicates:
             - Path=/home,/taskPage
           filters:
