@@ -69,6 +69,12 @@ curl -v -H "Authorization: Invalid Token
 
 ![img.png](img.png)
 
+### Consul
+
+To access services by consul need to set `SPRING_ACTIVE_PROFILES=consul`
+
+![img_2.png](img_2.png)
+
 ### K8s Setup
 
 Go to `k8s` folder and run the following commands to start minikube.
@@ -99,6 +105,7 @@ If that doesn't work can use port-foward command then access by `http://localhos
 kubectl port-forward $(kubectl get pod --selector="app=gateway-service" --output jsonpath='{.items[0].metadata.name}') 8080:8080 --address 0.0.0.0
 ```
 
+![img_3.png](img_3.png)
 
 More details look at https://www.linkedin.com/pulse/securing-resources-apigatewayspring-cloud-gateway-rodrigo-rodrigues/?published=t
 
