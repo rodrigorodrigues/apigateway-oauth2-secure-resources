@@ -91,10 +91,12 @@ Once images pushed to k8s back to `k8s folder` and deploy the services
 ```
 kubectl apply -f role.yml
 kubectl apply -f redis.yml
+kubectl apply -f secrets.yml
 kubectl create configmap gateway-service --from-file=gateway-configmap.yml
 kubectl apply -f gateway.yml
 kubectl apply -f ingress.yml
 ```
+PS: Set proper credentials in `secrets.yml`
 PS: If services don't deploy(`inage can't be pulled`) double check if docker images are in the correct place(`docker images | grep -service`) 
 
 To access direct by ingress(`localhst`) run `minikube tunnel` in a different terminal.

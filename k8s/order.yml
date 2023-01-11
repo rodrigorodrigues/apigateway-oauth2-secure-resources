@@ -18,6 +18,9 @@ spec:
         - name: order-service
           image: order-webmvc-service:0.0.1-SNAPSHOT
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: secrets
           env:
             - name: JAVA_OPTS
               value: -Xss256K -Xms1M -XX:+UseSerialGC -Djava.compiler=none -XX:ReservedCodeCacheSize=2496k -XX:MaxDirectMemorySize=1M -Xms256m -Xmx512m

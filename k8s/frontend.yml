@@ -28,9 +28,11 @@ spec:
             - name: SPRING_CLOUD_CONSUL_ENABLED
               value: "false"
             - name: ORDER_SERVICE_URL
-              value: http://order-service:8081
+              value: http://order-service
             - name: GATEWAY_URL
               value: http://localhost
+            - name: SPRING_CLOUD_LOADBALANCER_RIBBON_ENABLED
+              value: "false"
           ports:
             - containerPort: 8082
           livenessProbe:
