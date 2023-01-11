@@ -31,4 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
-secrets-hidden.yml
+k8s/secrets-hidden.yml
