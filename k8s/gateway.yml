@@ -31,7 +31,7 @@ spec:
             - name: SPRING_CLOUD_CONSUL_ENABLED
               value: "false"
             - name: FRONTEND_URL
-              value: http://frontend-service:8082
+              value: lb://frontend-service
           ports:
             - containerPort: 8080
           livenessProbe:

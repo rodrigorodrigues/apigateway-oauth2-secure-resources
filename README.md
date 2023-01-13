@@ -71,7 +71,7 @@ curl -v -H "Authorization: Invalid Token
 
 ### Consul
 
-To access services by consul need to set `SPRING_ACTIVE_PROFILES=consul`
+To access services by consul need to set `SPRING_PROFILES_ACTIVE=consul`
 
 ![img_2.png](img_2.png)
 

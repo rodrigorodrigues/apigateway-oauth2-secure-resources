@@ -7,21 +7,20 @@ services:
       - "8500:8500"
     command: "agent -server -bootstrap -ui -client=0.0.0.0"
 
-
   gateway-service:
     image: gateway-service:0.0.1-SNAPSHOT
     container_name: gateway-service
     environment:
       - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=consul
+      - CONSUL_HOST=consul
       - SPRING_REDIS_HOST=redis
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - OKTA_CLIENT_ID=${OKTA_CLIENT_ID}
       - OKTA_CLIENT_SECRET=${OKTA_CLIENT_SECRET}
       - OKTA_DOMAIN=${OKTA_DOMAIN}
-      - FRONTEND_URL=http://frontend-service:8082
-      - TASK_SERVICE_URL=http://task-service:8083
-      - ORDER_SERVICE_URL=http://order-service:8081
+      - FRONTEND_URL=lb://frontend-service
     expose:
       - "8080"
     ports:
@@ -37,7 +36,9 @@ services:
     container_name: order-service
     environment:
       - SERVER_PORT=8081
+      - SPRING_PROFILES_ACTIVE=consul
       - OKTA_DOMAIN=${OKTA_DOMAIN}
+      - CONSUL_HOST=consul
     expose:
       - "8081"
     ports:
@@ -48,8 +49,10 @@ services:
     container_name: frontend-service
     environment:
       - SERVER_PORT=8082
+      - SPRING_PROFILES_ACTIVE=consul
+      - CONSUL_HOST=consul
       - SPRING_REDIS_HOST=redis
-      - GATEWAY_URL=http://gateway-service:8080
+      - ORDER_SERVICE_URL=http://order-service:8081
     depends_on:
       - redis
     expose:
@@ -62,6 +65,8 @@ services:
     container_name: task-service
     environment:
       - SERVER_PORT=8083
+      - SPRING_PROFILES_ACTIVE=consul
+      - CONSUL_HOST=consul
       - SPRING_REDIS_HOST=redis
     depends_on:
       - redis

@@ -82,7 +82,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: consul
+      on-profile: consul,kubernetes
   cloud:
     gateway:
       routes:
